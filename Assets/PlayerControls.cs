@@ -80,6 +80,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RunFinish"",
+                    ""type"": ""Button"",
+                    ""id"": ""7a7ee560-b920-47b7-a86e-361fbaf31e3d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -142,7 +151,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""aefa40f6-1487-47a8-93f7-ee1995b150df"",
                     ""path"": ""<Keyboard>/space"",
-                    ""interactions"": ""Tap"",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Jump"",
@@ -164,7 +173,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""7c582ec6-7740-45c6-bc6d-9a5fbe3fb6df"",
                     ""path"": ""<Keyboard>/leftShift"",
-                    ""interactions"": ""Press(behavior=2)"",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Run"",
@@ -192,6 +201,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7d55527a-a29d-402d-9f9c-e946965c09ca"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RunFinish"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -206,6 +226,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_OnGround_Run = m_OnGround.FindAction("Run", throwIfNotFound: true);
         m_OnGround_Look = m_OnGround.FindAction("Look", throwIfNotFound: true);
         m_OnGround_Interact = m_OnGround.FindAction("Interact", throwIfNotFound: true);
+        m_OnGround_RunFinish = m_OnGround.FindAction("RunFinish", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -273,6 +294,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_OnGround_Run;
     private readonly InputAction m_OnGround_Look;
     private readonly InputAction m_OnGround_Interact;
+    private readonly InputAction m_OnGround_RunFinish;
     public struct OnGroundActions
     {
         private @PlayerControls m_Wrapper;
@@ -283,6 +305,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Run => m_Wrapper.m_OnGround_Run;
         public InputAction @Look => m_Wrapper.m_OnGround_Look;
         public InputAction @Interact => m_Wrapper.m_OnGround_Interact;
+        public InputAction @RunFinish => m_Wrapper.m_OnGround_RunFinish;
         public InputActionMap Get() { return m_Wrapper.m_OnGround; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -310,6 +333,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @RunFinish.started += instance.OnRunFinish;
+            @RunFinish.performed += instance.OnRunFinish;
+            @RunFinish.canceled += instance.OnRunFinish;
         }
 
         private void UnregisterCallbacks(IOnGroundActions instance)
@@ -332,6 +358,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @RunFinish.started -= instance.OnRunFinish;
+            @RunFinish.performed -= instance.OnRunFinish;
+            @RunFinish.canceled -= instance.OnRunFinish;
         }
 
         public void RemoveCallbacks(IOnGroundActions instance)
@@ -357,5 +386,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnRun(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnRunFinish(InputAction.CallbackContext context);
     }
 }

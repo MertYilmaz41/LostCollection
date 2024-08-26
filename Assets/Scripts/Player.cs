@@ -14,11 +14,11 @@ public class Player : MonoBehaviour
     public TMP_Text staminaText;
 
     [SerializeField] private float currentSpeed;
-    private int currentStamina;
+    private float currentStamina;
     private Vector3 playerVelocity;
 
     private bool isGrounded;
-    private bool sprinting = false;   
+    [SerializeField] private bool sprinting;   
     private bool lerpCrouch = false;
 
     private bool crouching;
@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
 
     
     private Coroutine regenCoroutine;
+    private Coroutine sprintCoroutine;
 
 
     private Ray ray;
@@ -38,6 +39,7 @@ public class Player : MonoBehaviour
         camera = GameObject.FindGameObjectWithTag("MainCamera");
         currentSpeed = playerData.WalkSpeed;
         currentStamina = playerData.MaxStamina;
+        sprinting = false;
     }
 
     void Update()
@@ -46,6 +48,8 @@ public class Player : MonoBehaviour
         HandleCrouchLerp();
         UpdateStaminaUI();
         CastRay();
+        DecreaseStamina();
+        IncreaseStamina();
     }
 
     public void ProcessMovement(Vector2 input)
@@ -68,52 +72,30 @@ public class Player : MonoBehaviour
         if (isGrounded && currentStamina >= 20)
         {
             playerVelocity.y = Mathf.Sqrt(playerData.JumpHeight * -2f * playerData.Gravity);
-            currentStamina -= 20;
-            if (regenCoroutine != null)
-            {
-                StopCoroutine(regenCoroutine);
-            }
-            //regenCoroutine = StartCoroutine(RegenStamina());
+            currentStamina -= 20;            
         }
     }
 
-    public void Sprint(InputAction.CallbackContext context)
+    public void SprintPerformed(InputAction.CallbackContext context)
     {
-        bool isShiftPressed = context.performed;
-        bool isShiftReleased = context.canceled;
-
-        if (isShiftPressed && !crouching && currentStamina > 0)
+        //Stamina azalmasý için tuþa basým süresi þartý koy
+        sprinting = true;
+        if(currentStamina >= 0 && !IsCrouching())
         {
-            if (!sprinting)
-            {
-                sprinting = true;
-                currentSpeed = playerData.SprintSpeed;
-
-                // Eðer stamina yenileme süreci varsa, durdur.
-                if (regenCoroutine != null)
-                {
-                    StopCoroutine(regenCoroutine);
-                    regenCoroutine = null;
-                }
-
-                // Sadece sprinting coroutinesi çalýþmýyorsa baþlat.
-                if (!IsInvoking("SprintStaminaDrain"))
-                {
-                    StartCoroutine(SprintStaminaDrain());
-                }
-            }
+            currentSpeed = playerData.SprintSpeed;
         }
-        else if (isShiftReleased)
+        Debug.Log("Sprint tuþuna basýldý");
+    }
+
+    public void SprintReleased(InputAction.CallbackContext context)
+    {
+        sprinting = false;
+        currentSpeed = playerData.WalkSpeed;
+        if (regenCoroutine == null)
         {
-            sprinting = false;
-            currentSpeed = playerData.WalkSpeed;
-
-            // Eðer stamina yenilemesi baþlamamýþsa baþlat.
-            if (regenCoroutine == null)
-            {
-                regenCoroutine = StartCoroutine(RegenStamina());
-            }
+            regenCoroutine = StartCoroutine(RegenStamina());
         }
+        Debug.Log("Sprint tuþu býrakýldý");
     }
 
     public void Crouch()
@@ -132,41 +114,43 @@ public class Player : MonoBehaviour
         lerpCrouch = true;
     }
 
-    private IEnumerator SprintStaminaDrain()
+    private void DecreaseStamina()
     {
-        while (IsSprinting() && currentStamina > 0)
+        if (currentSpeed == playerData.SprintSpeed && !IsCrouching() && IsCharacterMoving())
         {
-            currentStamina -= 5;
-            yield return new WaitForSeconds(1f);
-
+            currentStamina -= 10 * Time.deltaTime * 2f;
             if (currentStamina <= 0)
             {
+                currentStamina = 0;
                 sprinting = false;
                 currentSpeed = playerData.WalkSpeed;
-                if (regenCoroutine != null)
+                if (regenCoroutine == null)
                 {
-                    StopCoroutine(regenCoroutine);
+                    regenCoroutine = StartCoroutine(RegenStamina());
                 }
-                regenCoroutine = StartCoroutine(RegenStamina());
             }
         }
     }
 
-    private IEnumerator RegenStamina()  
-    {      
-        if (currentSpeed < playerData.SprintSpeed)
+    private void IncreaseStamina()
+    {
+        if (regenCoroutine == null && !sprinting)
         {
-            yield return new WaitForSeconds(2);
-            while (currentStamina < playerData.MaxStamina)
-            {
-                currentStamina += 1000 / 100;
-                yield return new WaitForSeconds(1f);
-            }
+            regenCoroutine = StartCoroutine(RegenStamina());
         }
-        
     }
 
-    
+    private IEnumerator RegenStamina()
+    {
+        yield return new WaitForSeconds(2);
+        while (currentStamina < playerData.MaxStamina && !sprinting)
+        {
+            currentStamina += 10 * Time.deltaTime * 10f;
+            yield return new WaitForSeconds(0.1f);
+        }
+        regenCoroutine = null;
+    }
+
     private void HandleCrouchLerp()
     {
         isGrounded = controller.isGrounded;
@@ -193,8 +177,6 @@ public class Player : MonoBehaviour
             }
         }
     }
-
-   
 
     private void UpdateStaminaUI()
     {

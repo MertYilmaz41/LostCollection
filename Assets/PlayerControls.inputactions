@@ -58,6 +58,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "RunFinish",
+                    "type": "Button",
+                    "id": "7a7ee560-b920-47b7-a86e-361fbaf31e3d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -120,7 +129,7 @@
                     "name": "",
                     "id": "aefa40f6-1487-47a8-93f7-ee1995b150df",
                     "path": "<Keyboard>/space",
-                    "interactions": "Tap",
+                    "interactions": "Press",
                     "processors": "",
                     "groups": "",
                     "action": "Jump",
@@ -142,7 +151,7 @@
                     "name": "",
                     "id": "7c582ec6-7740-45c6-bc6d-9a5fbe3fb6df",
                     "path": "<Keyboard>/leftShift",
-                    "interactions": "Press(behavior=2)",
+                    "interactions": "Press",
                     "processors": "",
                     "groups": "",
                     "action": "Run",
@@ -168,6 +177,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7d55527a-a29d-402d-9f9c-e946965c09ca",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RunFinish",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
