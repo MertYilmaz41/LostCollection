@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Jump",
+                    "name": "JumpStart",
                     "type": "Button",
                     "id": "6ea65306-3db6-446b-a759-a67b778d48ae",
                     "expectedControlType": "Button",
@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Run",
+                    "name": "SprintStart",
                     "type": "Button",
                     "id": "b3551911-97e7-4edb-8c93-fcac7c941a66",
                     "expectedControlType": "Button",
@@ -60,7 +60,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "RunFinish",
+                    "name": "SprintFinish",
                     "type": "Button",
                     "id": "7a7ee560-b920-47b7-a86e-361fbaf31e3d",
                     "expectedControlType": "Button",
@@ -132,7 +132,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "Jump",
+                    "action": "JumpStart",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -154,7 +154,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "Run",
+                    "action": "SprintStart",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -187,7 +187,7 @@
                     "interactions": "Press(behavior=1)",
                     "processors": "",
                     "groups": "",
-                    "action": "RunFinish",
+                    "action": "SprintFinish",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

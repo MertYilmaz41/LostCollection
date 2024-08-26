@@ -25,9 +25,9 @@ public class InputManager : MonoBehaviour
         look = GetComponent<PlayerLook>();
         playerControl = new PlayerControls();
         onGround = playerControl.OnGround;
-        onGround.Jump.performed += context => player.Jump();
-        onGround.Run.performed += context => player.SprintPerformed(context);
-        onGround.RunFinish.performed += context => player.SprintReleased(context);
+        onGround.JumpStart.performed += context => player.JumpPerformed();     
+        onGround.SprintStart.performed += context => player.SprintPerformed(context);
+        onGround.SprintFinish.performed += context => player.SprintReleased(context);
         onGround.Crouch.performed += context => player.Crouch();
         onGround.Interact.performed += context => player.Interact(context);
     }

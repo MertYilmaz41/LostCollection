@@ -37,7 +37,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Jump"",
+                    ""name"": ""JumpStart"",
                     ""type"": ""Button"",
                     ""id"": ""6ea65306-3db6-446b-a759-a67b778d48ae"",
                     ""expectedControlType"": ""Button"",
@@ -55,7 +55,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Run"",
+                    ""name"": ""SprintStart"",
                     ""type"": ""Button"",
                     ""id"": ""b3551911-97e7-4edb-8c93-fcac7c941a66"",
                     ""expectedControlType"": ""Button"",
@@ -82,7 +82,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""RunFinish"",
+                    ""name"": ""SprintFinish"",
                     ""type"": ""Button"",
                     ""id"": ""7a7ee560-b920-47b7-a86e-361fbaf31e3d"",
                     ""expectedControlType"": ""Button"",
@@ -154,7 +154,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Jump"",
+                    ""action"": ""JumpStart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -176,7 +176,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Run"",
+                    ""action"": ""SprintStart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -209,7 +209,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""interactions"": ""Press(behavior=1)"",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""RunFinish"",
+                    ""action"": ""SprintFinish"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -221,12 +221,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         // OnGround
         m_OnGround = asset.FindActionMap("OnGround", throwIfNotFound: true);
         m_OnGround_Walk = m_OnGround.FindAction("Walk", throwIfNotFound: true);
-        m_OnGround_Jump = m_OnGround.FindAction("Jump", throwIfNotFound: true);
+        m_OnGround_JumpStart = m_OnGround.FindAction("JumpStart", throwIfNotFound: true);
         m_OnGround_Crouch = m_OnGround.FindAction("Crouch", throwIfNotFound: true);
-        m_OnGround_Run = m_OnGround.FindAction("Run", throwIfNotFound: true);
+        m_OnGround_SprintStart = m_OnGround.FindAction("SprintStart", throwIfNotFound: true);
         m_OnGround_Look = m_OnGround.FindAction("Look", throwIfNotFound: true);
         m_OnGround_Interact = m_OnGround.FindAction("Interact", throwIfNotFound: true);
-        m_OnGround_RunFinish = m_OnGround.FindAction("RunFinish", throwIfNotFound: true);
+        m_OnGround_SprintFinish = m_OnGround.FindAction("SprintFinish", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -289,23 +289,23 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_OnGround;
     private List<IOnGroundActions> m_OnGroundActionsCallbackInterfaces = new List<IOnGroundActions>();
     private readonly InputAction m_OnGround_Walk;
-    private readonly InputAction m_OnGround_Jump;
+    private readonly InputAction m_OnGround_JumpStart;
     private readonly InputAction m_OnGround_Crouch;
-    private readonly InputAction m_OnGround_Run;
+    private readonly InputAction m_OnGround_SprintStart;
     private readonly InputAction m_OnGround_Look;
     private readonly InputAction m_OnGround_Interact;
-    private readonly InputAction m_OnGround_RunFinish;
+    private readonly InputAction m_OnGround_SprintFinish;
     public struct OnGroundActions
     {
         private @PlayerControls m_Wrapper;
         public OnGroundActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Walk => m_Wrapper.m_OnGround_Walk;
-        public InputAction @Jump => m_Wrapper.m_OnGround_Jump;
+        public InputAction @JumpStart => m_Wrapper.m_OnGround_JumpStart;
         public InputAction @Crouch => m_Wrapper.m_OnGround_Crouch;
-        public InputAction @Run => m_Wrapper.m_OnGround_Run;
+        public InputAction @SprintStart => m_Wrapper.m_OnGround_SprintStart;
         public InputAction @Look => m_Wrapper.m_OnGround_Look;
         public InputAction @Interact => m_Wrapper.m_OnGround_Interact;
-        public InputAction @RunFinish => m_Wrapper.m_OnGround_RunFinish;
+        public InputAction @SprintFinish => m_Wrapper.m_OnGround_SprintFinish;
         public InputActionMap Get() { return m_Wrapper.m_OnGround; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -318,24 +318,24 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Walk.started += instance.OnWalk;
             @Walk.performed += instance.OnWalk;
             @Walk.canceled += instance.OnWalk;
-            @Jump.started += instance.OnJump;
-            @Jump.performed += instance.OnJump;
-            @Jump.canceled += instance.OnJump;
+            @JumpStart.started += instance.OnJumpStart;
+            @JumpStart.performed += instance.OnJumpStart;
+            @JumpStart.canceled += instance.OnJumpStart;
             @Crouch.started += instance.OnCrouch;
             @Crouch.performed += instance.OnCrouch;
             @Crouch.canceled += instance.OnCrouch;
-            @Run.started += instance.OnRun;
-            @Run.performed += instance.OnRun;
-            @Run.canceled += instance.OnRun;
+            @SprintStart.started += instance.OnSprintStart;
+            @SprintStart.performed += instance.OnSprintStart;
+            @SprintStart.canceled += instance.OnSprintStart;
             @Look.started += instance.OnLook;
             @Look.performed += instance.OnLook;
             @Look.canceled += instance.OnLook;
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
-            @RunFinish.started += instance.OnRunFinish;
-            @RunFinish.performed += instance.OnRunFinish;
-            @RunFinish.canceled += instance.OnRunFinish;
+            @SprintFinish.started += instance.OnSprintFinish;
+            @SprintFinish.performed += instance.OnSprintFinish;
+            @SprintFinish.canceled += instance.OnSprintFinish;
         }
 
         private void UnregisterCallbacks(IOnGroundActions instance)
@@ -343,24 +343,24 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Walk.started -= instance.OnWalk;
             @Walk.performed -= instance.OnWalk;
             @Walk.canceled -= instance.OnWalk;
-            @Jump.started -= instance.OnJump;
-            @Jump.performed -= instance.OnJump;
-            @Jump.canceled -= instance.OnJump;
+            @JumpStart.started -= instance.OnJumpStart;
+            @JumpStart.performed -= instance.OnJumpStart;
+            @JumpStart.canceled -= instance.OnJumpStart;
             @Crouch.started -= instance.OnCrouch;
             @Crouch.performed -= instance.OnCrouch;
             @Crouch.canceled -= instance.OnCrouch;
-            @Run.started -= instance.OnRun;
-            @Run.performed -= instance.OnRun;
-            @Run.canceled -= instance.OnRun;
+            @SprintStart.started -= instance.OnSprintStart;
+            @SprintStart.performed -= instance.OnSprintStart;
+            @SprintStart.canceled -= instance.OnSprintStart;
             @Look.started -= instance.OnLook;
             @Look.performed -= instance.OnLook;
             @Look.canceled -= instance.OnLook;
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
-            @RunFinish.started -= instance.OnRunFinish;
-            @RunFinish.performed -= instance.OnRunFinish;
-            @RunFinish.canceled -= instance.OnRunFinish;
+            @SprintFinish.started -= instance.OnSprintFinish;
+            @SprintFinish.performed -= instance.OnSprintFinish;
+            @SprintFinish.canceled -= instance.OnSprintFinish;
         }
 
         public void RemoveCallbacks(IOnGroundActions instance)
@@ -381,11 +381,11 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     public interface IOnGroundActions
     {
         void OnWalk(InputAction.CallbackContext context);
-        void OnJump(InputAction.CallbackContext context);
+        void OnJumpStart(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
-        void OnRun(InputAction.CallbackContext context);
+        void OnSprintStart(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
-        void OnRunFinish(InputAction.CallbackContext context);
+        void OnSprintFinish(InputAction.CallbackContext context);
     }
 }

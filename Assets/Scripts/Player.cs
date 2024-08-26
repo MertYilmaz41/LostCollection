@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
         UpdateStaminaUI();
         CastRay();
         DecreaseStamina();
-        IncreaseStamina();
+
     }
 
     public void ProcessMovement(Vector2 input)
@@ -67,14 +67,20 @@ public class Player : MonoBehaviour
         controller.Move(playerVelocity * Time.deltaTime);
     }
 
-    public void Jump()
+    public void JumpPerformed()
     {
         if (isGrounded && currentStamina >= 20)
         {
             playerVelocity.y = Mathf.Sqrt(playerData.JumpHeight * -2f * playerData.Gravity);
-            currentStamina -= 20;            
+            currentStamina -= 20;
+            if (regenCoroutine != null)
+            {
+                StopCoroutine(regenCoroutine);
+            }
+            regenCoroutine = StartCoroutine(RegenStamina());
         }
     }
+
 
     public void SprintPerformed(InputAction.CallbackContext context)
     {
@@ -132,18 +138,10 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void IncreaseStamina()
-    {
-        if (regenCoroutine == null && !sprinting)
-        {
-            regenCoroutine = StartCoroutine(RegenStamina());
-        }
-    }
-
     private IEnumerator RegenStamina()
     {
         yield return new WaitForSeconds(2);
-        while (currentStamina < playerData.MaxStamina && !sprinting)
+        while (currentStamina < playerData.MaxStamina &&  currentSpeed < playerData.SprintSpeed)
         {
             currentStamina += 10 * Time.deltaTime * 10f;
             yield return new WaitForSeconds(0.1f);
