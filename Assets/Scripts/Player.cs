@@ -9,30 +9,31 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerData playerData;
     [SerializeField] private LayerMask interactableLayerMask;
 
+    private Vector3 playerVelocity;
     private new GameObject camera;
-    public CharacterController controller;
+    private CharacterController characterController;
     public TMP_Text staminaText;
 
+    [Header("Player Stats")]
     [SerializeField] private float currentSpeed;
-    private float currentStamina;
-    private Vector3 playerVelocity;
+    [SerializeField] private float currentStamina;
 
-    private bool isGrounded;
+    [Header("Player Movement Status")]
     [SerializeField] private bool sprinting;   
-    private bool lerpCrouch = false;
+    [SerializeField] private bool lerpCrouch = false;
+    [SerializeField] private bool crouching;
+    [SerializeField] private bool isGrounded;
 
-    private bool crouching;
     private float crouchTimer;
-
-    
-    private Coroutine regenCoroutine;
-    private Coroutine sprintCoroutine;
+   
+    private Coroutine regenCoroutine; 
 
 
     private Ray ray;
     private RaycastHit hit;
-    private float rayDistance = 1.8f;
-    private bool hitSomething;
+    [Header("Raycast Settings")]
+    [SerializeField] private float rayDistance = 1.8f;
+    [SerializeField] private bool hitSomething;
 
     void Start()
     {
@@ -40,6 +41,7 @@ public class Player : MonoBehaviour
         currentSpeed = playerData.WalkSpeed;
         currentStamina = playerData.MaxStamina;
         sprinting = false;
+        characterController = GetComponent<CharacterController>();
     }
 
     void Update()
@@ -49,22 +51,20 @@ public class Player : MonoBehaviour
         UpdateStaminaUI();
         CastRay();
         DecreaseStamina();
-
     }
 
     public void ProcessMovement(Vector2 input)
     {
         Vector3 moveDirection = Vector3.zero;
-
         moveDirection.x = input.x;
         moveDirection.z = input.y;
-        controller.Move(transform.TransformDirection(moveDirection) * currentSpeed * Time.deltaTime);
+        characterController.Move(transform.TransformDirection(moveDirection) * currentSpeed * Time.deltaTime);
         playerVelocity.y += playerData.Gravity * Time.deltaTime;
         if (isGrounded && playerVelocity.y < 0)
         {
             playerVelocity.y = -2f;
         }
-        controller.Move(playerVelocity * Time.deltaTime);
+        characterController.Move(playerVelocity * Time.deltaTime);
     }
 
     public void JumpPerformed()
@@ -77,7 +77,7 @@ public class Player : MonoBehaviour
             {
                 StopCoroutine(regenCoroutine);
             }
-            regenCoroutine = StartCoroutine(RegenStamina());
+            regenCoroutine = StartCoroutine(IncreaseStamina());
         }
     }
 
@@ -99,7 +99,7 @@ public class Player : MonoBehaviour
         currentSpeed = playerData.WalkSpeed;
         if (regenCoroutine == null)
         {
-            regenCoroutine = StartCoroutine(RegenStamina());
+            regenCoroutine = StartCoroutine(IncreaseStamina());
         }
         Debug.Log("Sprint tuþu býrakýldý");
     }
@@ -132,13 +132,13 @@ public class Player : MonoBehaviour
                 currentSpeed = playerData.WalkSpeed;
                 if (regenCoroutine == null)
                 {
-                    regenCoroutine = StartCoroutine(RegenStamina());
+                    regenCoroutine = StartCoroutine(IncreaseStamina());
                 }
             }
         }
     }
 
-    private IEnumerator RegenStamina()
+    private IEnumerator IncreaseStamina()
     {
         yield return new WaitForSeconds(2);
         while (currentStamina < playerData.MaxStamina &&  currentSpeed < playerData.SprintSpeed)
@@ -151,7 +151,7 @@ public class Player : MonoBehaviour
 
     private void HandleCrouchLerp()
     {
-        isGrounded = controller.isGrounded;
+        isGrounded = characterController.isGrounded;
         if (lerpCrouch)
         {
             crouchTimer += Time.deltaTime;
@@ -160,11 +160,11 @@ public class Player : MonoBehaviour
 
             if (IsCrouching())
             {
-                controller.height = Mathf.Lerp(controller.height, 1, p);
+                characterController.height = Mathf.Lerp(characterController.height, 1, p);
             }
             else
             {
-                controller.height = Mathf.Lerp(controller.height, 2, p);
+                characterController.height = Mathf.Lerp(characterController.height, 2, p);
                 currentSpeed = playerData.WalkSpeed;
             }
 
