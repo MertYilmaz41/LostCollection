@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2158.8625, g: 2263.432, b: 3287.0278, a: 1}
+  m_IndirectSpecularColor: {r: 2159.8762, g: 2264.2522, b: 3287.6294, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1779,6 +1779,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4564963713198246591, guid: 41c4bec544a26d64b808434912abed3e,
         type: 3}
+      propertyPath: lerpCrouch
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4564963713198246591, guid: 41c4bec544a26d64b808434912abed3e,
+        type: 3}
       propertyPath: playerData
       value: 
       objectReference: {fileID: 11400000, guid: ddfa0ef8b6346a14db951304f0232f60,
@@ -1801,6 +1806,11 @@ PrefabInstance:
     - target: {fileID: 4564963713198246591, guid: 41c4bec544a26d64b808434912abed3e,
         type: 3}
       propertyPath: currentSpeed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4564963713198246591, guid: 41c4bec544a26d64b808434912abed3e,
+        type: 3}
+      propertyPath: hitSomething
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4564963713198246591, guid: 41c4bec544a26d64b808434912abed3e,

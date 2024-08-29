@@ -96,12 +96,15 @@ public class Player : MonoBehaviour
     public void SprintReleased(InputAction.CallbackContext context)
     {
         sprinting = false;
-        currentSpeed = playerData.WalkSpeed;
-        if (regenCoroutine == null)
+        if (!crouching)
         {
-            regenCoroutine = StartCoroutine(IncreaseStamina());
-        }
-        Debug.Log("Sprint tuþu býrakýldý");
+            currentSpeed = playerData.WalkSpeed;
+            if (regenCoroutine == null)
+            {
+                regenCoroutine = StartCoroutine(IncreaseStamina());
+            }
+            Debug.Log("Sprint tuþu býrakýldý");
+        }       
     }
 
     public void Crouch()
@@ -114,7 +117,7 @@ public class Player : MonoBehaviour
             currentSpeed = playerData.CrouchSpeed;
         }
         else
-        {
+        {           
             currentSpeed = playerData.WalkSpeed; // Reset speed to normal when standing up
         }
         lerpCrouch = true;
@@ -161,6 +164,7 @@ public class Player : MonoBehaviour
             if (IsCrouching())
             {
                 characterController.height = Mathf.Lerp(characterController.height, 1, p);
+                currentSpeed = playerData.CrouchSpeed;
             }
             else
             {
