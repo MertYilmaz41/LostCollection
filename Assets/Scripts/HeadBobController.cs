@@ -35,17 +35,17 @@ public class HeadBobController : MonoBehaviour
         {
             if (player.IsSprinting())
             {
-                bobSpeed = 7f; // bobspeed while character is sprinting
+                bobSpeed = 7f;
                 bobAmount = 0.10f;
             }
             
             else if (player.IsCrouching())
             {
-                bobSpeed = 3f; // bobspeed while character is crounching
+                bobSpeed = 3f; 
             }
             else
             {
-                bobSpeed = 4.8f; // bobspeed while character is walking
+                bobSpeed = 4.8f; 
             }
 
             timer += bobSpeed * Time.deltaTime;

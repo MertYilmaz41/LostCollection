@@ -6,7 +6,11 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private PlayerData playerData;
+
+    
+    [SerializeField] private PlayerData originalPlayerData;
+    private PlayerData playerDataInstance;
+
     [SerializeField] private LayerMask interactableLayerMask;
 
     private Vector3 playerVelocity;
@@ -37,9 +41,10 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        playerDataInstance = Instantiate(originalPlayerData);
         camera = GameObject.FindGameObjectWithTag("MainCamera");
-        currentSpeed = playerData.WalkSpeed;
-        currentStamina = playerData.MaxStamina;
+        currentSpeed = playerDataInstance.WalkSpeed;
+        currentStamina = playerDataInstance.MaxStamina;
         sprinting = false;
         characterController = GetComponent<CharacterController>();
     }
@@ -59,7 +64,7 @@ public class Player : MonoBehaviour
         moveDirection.x = input.x;
         moveDirection.z = input.y;
         characterController.Move(transform.TransformDirection(moveDirection) * currentSpeed * Time.deltaTime);
-        playerVelocity.y += playerData.Gravity * Time.deltaTime;
+        playerVelocity.y += playerDataInstance.Gravity * Time.deltaTime;
         if (isGrounded && playerVelocity.y < 0)
         {
             playerVelocity.y = -2f;
@@ -71,7 +76,7 @@ public class Player : MonoBehaviour
     {
         if (isGrounded && currentStamina >= 20)
         {
-            playerVelocity.y = Mathf.Sqrt(playerData.JumpHeight * -2f * playerData.Gravity);
+            playerVelocity.y = Mathf.Sqrt(playerDataInstance.JumpHeight * -2f * playerDataInstance.Gravity);
             currentStamina -= 20;
             if (regenCoroutine != null)
             {
@@ -84,11 +89,11 @@ public class Player : MonoBehaviour
 
     public void SprintPerformed(InputAction.CallbackContext context)
     {
-        //Stamina azalmasý için tuþa basým süresi þartý koy
+        
         sprinting = true;
         if(currentStamina >= 0 && !IsCrouching())
         {
-            currentSpeed = playerData.SprintSpeed;
+            currentSpeed = playerDataInstance.SprintSpeed;
         }
         Debug.Log("Sprint tuþuna basýldý");
     }
@@ -98,7 +103,7 @@ public class Player : MonoBehaviour
         sprinting = false;
         if (!crouching)
         {
-            currentSpeed = playerData.WalkSpeed;
+            currentSpeed = playerDataInstance.WalkSpeed;
             if (regenCoroutine == null)
             {
                 regenCoroutine = StartCoroutine(IncreaseStamina());
@@ -113,26 +118,26 @@ public class Player : MonoBehaviour
         crouchTimer = 0f;
         if (crouching)
         {
-            sprinting = false; // Disable sprinting when crouching
-            currentSpeed = playerData.CrouchSpeed;
+            sprinting = false; 
+            currentSpeed = playerDataInstance.CrouchSpeed;
         }
         else
         {           
-            currentSpeed = playerData.WalkSpeed; // Reset speed to normal when standing up
+            currentSpeed = playerDataInstance.WalkSpeed; 
         }
         lerpCrouch = true;
     }
 
     private void DecreaseStamina()
     {
-        if (currentSpeed == playerData.SprintSpeed && !IsCrouching() && IsCharacterMoving())
+        if (currentSpeed == playerDataInstance.SprintSpeed && !IsCrouching() && IsCharacterMoving())
         {
             currentStamina -= 10 * Time.deltaTime * 2f;
             if (currentStamina <= 0)
             {
                 currentStamina = 0;
                 sprinting = false;
-                currentSpeed = playerData.WalkSpeed;
+                currentSpeed = playerDataInstance.WalkSpeed;
                 if (regenCoroutine == null)
                 {
                     regenCoroutine = StartCoroutine(IncreaseStamina());
@@ -144,7 +149,7 @@ public class Player : MonoBehaviour
     private IEnumerator IncreaseStamina()
     {
         yield return new WaitForSeconds(2);
-        while (currentStamina < playerData.MaxStamina &&  currentSpeed < playerData.SprintSpeed)
+        while (currentStamina < playerDataInstance.MaxStamina &&  currentSpeed < playerDataInstance.SprintSpeed)
         {
             currentStamina += 10 * Time.deltaTime * 10f;
             yield return new WaitForSeconds(0.1f);
@@ -164,12 +169,12 @@ public class Player : MonoBehaviour
             if (IsCrouching())
             {
                 characterController.height = Mathf.Lerp(characterController.height, 1, p);
-                currentSpeed = playerData.CrouchSpeed;
+                currentSpeed = playerDataInstance.CrouchSpeed;
             }
             else
             {
                 characterController.height = Mathf.Lerp(characterController.height, 2, p);
-                currentSpeed = playerData.WalkSpeed;
+                currentSpeed = playerDataInstance.WalkSpeed;
             }
 
             if (p > 1)
@@ -189,7 +194,7 @@ public class Player : MonoBehaviour
     {
         if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) && !IsCrouching() && !IsSprinting())
         {
-            currentSpeed = playerData.WalkSpeed;
+            currentSpeed = playerDataInstance.WalkSpeed;
             return true;
         }
         return false;
