@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/OutdoorsScene.unity
+    path: Assets/Scenes/TestAreScene.unity
     guid: 8124e5870f4fd4c779e7a5f994e84ad1
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 2988730984062ad4f87a1571be4f30b9,
