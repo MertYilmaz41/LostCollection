@@ -6,12 +6,20 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-   
+    private static InputManager instance;
     private PlayerControls playerControl;
     private PlayerControls.OnGroundActions onGround;
     private Player player;
     private PlayerLook look;
 
+
+    public static InputManager Instance
+    {
+        get
+        {
+            return instance;
+        }
+    }
 
     private void Update()
     {
@@ -21,9 +29,17 @@ public class InputManager : MonoBehaviour
 
     void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            instance = this;
+            playerControl = new PlayerControls();
+        }
         player = GetComponent<Player>();
-        look = GetComponent<PlayerLook>();
-        playerControl = new PlayerControls();
+        look = GetComponent<PlayerLook>();    
         onGround = playerControl.OnGround;
         onGround.JumpStart.performed += context => player.JumpPerformed();     
         onGround.SprintStart.performed += context => player.SprintPerformed(context);
@@ -45,5 +61,10 @@ public class InputManager : MonoBehaviour
     private void OnDisable()
     {     
         onGround.Disable();      
+    }
+
+    public Vector2 GetMouseDelta()
+    {
+        return onGround.Look.ReadValue<Vector2>();
     }
 }

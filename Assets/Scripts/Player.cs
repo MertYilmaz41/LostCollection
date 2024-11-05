@@ -1,20 +1,20 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
+using Cinemachine;
 
 public class Player : MonoBehaviour
 {
-
-    
     [SerializeField] private PlayerData originalPlayerData;
     private PlayerData playerDataInstance;
 
     [SerializeField] private LayerMask interactableLayerMask;
 
     private Vector3 playerVelocity;
-    private new GameObject camera;
+
+    [SerializeField] private CinemachineVirtualCamera playerVirtualCamera; // camerayý cinemachine ile deðiþtir.
+
     private CharacterController characterController;
     public TMP_Text staminaText;
 
@@ -42,10 +42,9 @@ public class Player : MonoBehaviour
     void Start()
     {
         playerDataInstance = Instantiate(originalPlayerData);
-        camera = GameObject.FindGameObjectWithTag("MainCamera");
         currentSpeed = playerDataInstance.WalkSpeed;
         currentStamina = playerDataInstance.MaxStamina;
-        sprinting = false;
+        sprinting = false;      
         characterController = GetComponent<CharacterController>();
     }
 
@@ -53,9 +52,9 @@ public class Player : MonoBehaviour
     {
         IsCharacterWalking();
         HandleCrouchLerp();
-        UpdateStaminaUI();
-        CastRay();
         DecreaseStamina();
+        UpdateStaminaUI();               
+        CastRay();
     }
 
     public void ProcessMovement(Vector2 input)
@@ -95,7 +94,7 @@ public class Player : MonoBehaviour
         {
             currentSpeed = playerDataInstance.SprintSpeed;
         }
-        Debug.Log("Sprint tuþuna basýldý");
+        
     }
 
     public void SprintReleased(InputAction.CallbackContext context)
@@ -108,7 +107,7 @@ public class Player : MonoBehaviour
             {
                 regenCoroutine = StartCoroutine(IncreaseStamina());
             }
-            Debug.Log("Sprint tuþu býrakýldý");
+            
         }       
     }
 
@@ -190,7 +189,7 @@ public class Player : MonoBehaviour
         staminaText.SetText("Stamina: " + currentStamina);
     }
 
-    private bool IsCharacterWalking()
+    public bool IsCharacterWalking()
     {
         if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) && !IsCrouching() && !IsSprinting())
         {
@@ -200,7 +199,7 @@ public class Player : MonoBehaviour
         return false;
     }
 
-    private bool IsCharacterMoving()
+    public bool IsCharacterMoving()
     {
         if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)))
         {
@@ -221,7 +220,7 @@ public class Player : MonoBehaviour
 
     private void CastRay()
     {
-        ray = new Ray(camera.transform.position, camera.transform.forward);
+        ray = new Ray(playerVirtualCamera.transform.position, playerVirtualCamera.transform.forward);
         hitSomething = Physics.Raycast(ray, out hit, rayDistance, interactableLayerMask, QueryTriggerInteraction.Ignore);
         Debug.DrawRay(ray.origin, ray.direction * rayDistance, hitSomething ? Color.green : Color.red, 0f);
     }

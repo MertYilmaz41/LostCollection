@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class PlayerLook : MonoBehaviour
-{
-    private new GameObject camera;
+{ 
+    [SerializeField] private CinemachineVirtualCamera playerVirtualCamera;
     [SerializeField] private float xRotation = 0f;
     [SerializeField] private float xSensitivity = 15f;
     [SerializeField] private float ySensitivity = 15f;
@@ -13,7 +14,6 @@ public class PlayerLook : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        camera = GameObject.FindGameObjectWithTag("MainCamera");
     }
 
     private void Update()
@@ -27,7 +27,7 @@ public class PlayerLook : MonoBehaviour
         float mouseY = input.y;
         xRotation -= (mouseY * Time.deltaTime) * ySensitivity;
         xRotation = Mathf.Clamp(xRotation, -80f, 80f);
-        camera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        playerVirtualCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * (mouseX * Time.deltaTime) * xSensitivity);
 
     }
